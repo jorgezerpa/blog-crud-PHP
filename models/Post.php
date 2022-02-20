@@ -89,6 +89,7 @@
         }
 
 
+
         //create post
         public function create(){
             //Create query
@@ -123,6 +124,77 @@
         printf('error: %s.\n', $stnt->error);
 
         return false;
-
         }
+
+
+
+        //update post
+        public function update(){
+            //Create query
+            $query = 'UPDATE ' . $this->table .'
+                SET 
+                    title = :title,
+                    body = :body,
+                    author = :author,
+                    category_id = :category_id
+                WHERE 
+                    id = :id';
+
+        //Prepare statement
+        $stnt = $this->conn->prepare($query);
+
+        //Clean data
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->body = htmlspecialchars(strip_tags($this->body));
+        $this->author = htmlspecialchars(strip_tags($this->author));
+        $this->category_id = htmlspecialchars(strip_tags($this->category_id));
+        $this->id = htmlspecialchars(strip_tags($this->id));
+        
+
+        //Bind data
+        $stnt->bindParam('title', $this->title);
+        $stnt->bindParam('body', $this->body);
+        $stnt->bindParam('author', $this->author);
+        $stnt->bindParam('category_id', $this->category_id);
+        $stnt->bindParam('id', $this->id);
+
+        //Eecute query
+        if($stnt->execute()){
+            return true;
+        }
+        
+        //Print error if something goes wrong
+        printf('error: %s.\n', $stnt->error);
+
+        return false;
+        }
+
+
+
+         // Delete Post
+    public function delete() {
+        // Create query
+        $query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
+
+        // Prepare statement
+        $stmt = $this->conn->prepare($query);
+
+        // Clean data
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // Bind data
+        $stmt->bindParam(':id', $this->id);
+
+        // Execute query
+        if($stmt->execute()) {
+          return true;
+        }
+
+        // Print error if something goes wrong
+        printf("Error: %s.\n", $stmt->error);
+
+        return false;
+  }
+
+
     }
